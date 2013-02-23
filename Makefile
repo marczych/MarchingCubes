@@ -1,14 +1,14 @@
 SRC_DIR = src
 OBJ_DIR = obj
 
-LIBS = GLU
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
-LIBS += GL glut
-FRAMEWORKS=
+LIBS = GL GLU glut
+FRAMEWORKS =
 endif
 ifeq ($(UNAME_S),Darwin)
-FRAMEWORKS=OpenGL GLUT
+LIBS =
+FRAMEWORKS = OpenGL GLUT
 endif
 INCS = $(SRC_DIR)
 DEFS = GL_GLEXT_PROTOTYPES
