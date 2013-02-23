@@ -10,7 +10,7 @@ ifeq ($(UNAME_S),Darwin)
 LIBS =
 FRAMEWORKS = OpenGL GLUT
 endif
-INCS = $(SRC_DIR)
+INCS = $(SRC_DIR) third_party/glm
 DEFS = GL_GLEXT_PROTOTYPES
 WARN = all extra
 

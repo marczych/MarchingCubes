@@ -17,6 +17,9 @@
 #pragma comment(lib, "freeglut.lib")
 #endif
 
+#include <glm/glm.hpp>
+using namespace glm;
+
 void draw() {
    // Draw here.
 }
