@@ -17,7 +17,9 @@
 #pragma comment(lib, "freeglut.lib")
 #endif
 
+#include "MarchingCubes.h"
 #include <glm/glm.hpp>
+
 using namespace glm;
 
 void draw() {
@@ -37,6 +39,8 @@ void glut(int argc, char** argv) {
 
 int main(int argc, char** argv) {
    glut(argc, argv);
+
+   MarchingCubes marchingCubes();
 
    return 0;
 }
