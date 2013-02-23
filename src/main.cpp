@@ -18,9 +18,11 @@
 #endif
 
 #include "MarchingCubes.h"
+#include <iostream>
 #include <glm/glm.hpp>
 
 using namespace glm;
+using namespace std;
 
 void draw() {
    // Draw here.
@@ -40,7 +42,7 @@ void glut(int argc, char** argv) {
 int main(int argc, char** argv) {
    glut(argc, argv);
 
-   MarchingCubes marchingCubes();
+   MarchingCubes marchingCubes(vec3(128, 128, 128));
 
    return 0;
 }
