@@ -68,6 +68,9 @@ void SetModel() {
   safe_glUniformMatrix4fv(h_uModelMatrix, glm::value_ptr(ModelTrans.modelViewMatrix));
 }
 
+int getTriangleIndex(int edge1, int edge2, int edge3) {
+   return ((edge1 << 8) | (edge2 << 4) | edge3) * 3;
+}
 
 void InitCubeTriangles() {
    float cubeEdges[] = {
@@ -87,9 +90,23 @@ void InitCubeTriangles() {
       -0.5, 0, 0
    };
 
-   unsigned short idx[] = {
-      6, 5, 4
-   };
+   short cubeIndex[((1 << 13) - 1) * 3];
+   memset(cubeIndex, -1, sizeof(cubeIndex));
+
+   for (int i = 0; i < 256; i++) {
+      const int* triangleRow = MarchingCubes::triTable[i];
+
+      for (int k = 0; triangleRow[k] != -1; k += 3) {
+         int index = getTriangleIndex(triangleRow[k], triangleRow[k + 1],
+          triangleRow[k + 2]);
+
+         if (cubeIndex[index] == -1) {
+            cubeIndex[index] = triangleRow[k];
+            cubeIndex[index + 1] = triangleRow[k + 1];
+            cubeIndex[index + 2] = triangleRow[k + 2];
+         }
+      }
+   }
 
    glGenBuffers(1, &CubeBuffObj);
    glBindBuffer(GL_ARRAY_BUFFER, CubeBuffObj);
@@ -97,7 +114,7 @@ void InitCubeTriangles() {
 
    glGenBuffers(1, &CubeIdxBuffObj);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeIdxBuffObj);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(idx), idx, GL_STATIC_DRAW);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(cubeIndex), cubeIndex, GL_STATIC_DRAW);
 }
 
 void draw() {
@@ -122,7 +139,9 @@ void draw() {
 
    // 0x852178
    glUniform3f(h_uColor, 0x85/(float)0xFF, 0x21/(float)0xFF, 0x78/(float)0xFF);
-   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, 0);
+   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT,
+    (const GLvoid*)(getTriangleIndex(5, 2, 10) * sizeof(short)));
+
    ModelTrans.popMatrix();
 
    // Disable the attributes used by our shader
