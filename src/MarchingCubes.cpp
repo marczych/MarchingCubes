@@ -43,6 +43,11 @@ int MarchingCubes::index(int x, int y, int z) {
    return (z * size.x * size.y) + (y * size.x) + x;
 }
 
+ivec3 MarchingCubes::coordinate(int idx) {
+   int modIdx = idx % (size.x * size.y);
+   return ivec3(modIdx % size.y, modIdx / size.y, idx / (size.x * size.y));
+}
+
 const int MarchingCubes::edgeTable[256] = {
    0x0  , 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
    0x80c, 0x905, 0xa0f, 0xb06, 0xc0a, 0xd03, 0xe09, 0xf00,
