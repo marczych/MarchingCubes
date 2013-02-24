@@ -1,7 +1,7 @@
 #include "MarchingCubes.h"
 
 MarchingCubes::MarchingCubes(vec3 size_) : size(size_) {
-   points.resize(size.x * size.y * size.z);
+   points.resize((size.x + 1) * (size.y + 1) * (size.z + 1));
 }
 
 int MarchingCubes::index(int x, int y, int z) {
