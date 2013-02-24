@@ -141,7 +141,7 @@ void draw() {
       ModelTrans.pushMatrix();
 
       ModelTrans.translate((vec3)marchingCubes.coordinate(i));
-      /* ModelTrans.scale(128, 128, 128); */
+      ModelTrans.rotate(-90.0f, vec3(1.0f, 0.0f, 0.0f));
 
       SetModel();
 
