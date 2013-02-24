@@ -28,7 +28,8 @@
 using namespace glm;
 using namespace std;
 
-MarchingCubes marchingCubes(vec3(128, 128, 128));
+vec3 volumeSize(128);
+MarchingCubes marchingCubes(volumeSize);
 
 int shaderProgram;
 
@@ -43,14 +44,13 @@ GLuint CubeBuffObj, CubeIdxBuffObj;
 
 /* globals to control positioning and window size */
 float g_width, g_height;
-float g_viewtrans = -250;
 float g_viewangle = 0;
 
 RenderingHelper ModelTrans;
 
 // Global variable for radius. Maybe we should find a better way to do this...
 // You know, without a global variable.
-int radius = 72;
+int radius = sqrt(dot(volumeSize, volumeSize)) * 0.25f;
 
 /* projection matrix - do not change - sets matrix in shader */
 void SetProjectionMatrix() {
@@ -60,7 +60,8 @@ void SetProjectionMatrix() {
 
 /* camera controls - do not change - sets matrix in shader */
 void SetView() {
-  glm::mat4 Trans = glm::translate( glm::mat4(1.0f), glm::vec3(0.0f, 0, g_viewtrans));
+  glm::mat4 Trans = glm::translate( glm::mat4(1.0f),
+   glm::vec3(-volumeSize.x * 0.5f, -volumeSize.y * 0.5f, -volumeSize.z * 1.5f));
   glm::mat4 RotateX = glm::rotate( Trans, g_viewangle, glm::vec3(0.0f, 1, 0));
   safe_glUniformMatrix4fv(h_uViewMatrix, glm::value_ptr(RotateX));
 }
