@@ -28,6 +28,8 @@
 using namespace glm;
 using namespace std;
 
+MarchingCubes marchingCubes(vec3(128, 128, 128));
+
 int shaderProgram;
 
 //Handles to the shader data
@@ -41,7 +43,7 @@ GLuint CubeBuffObj, CubeIdxBuffObj;
 
 /* globals to control positioning and window size */
 float g_width, g_height;
-float g_viewtrans = -5.5;
+float g_viewtrans = -250;
 float g_viewangle = 0;
 
 RenderingHelper ModelTrans;
@@ -52,7 +54,7 @@ int radius = 72;
 
 /* projection matrix - do not change - sets matrix in shader */
 void SetProjectionMatrix() {
-  glm::mat4 Projection = glm::perspective(80.0f, (float)g_width/g_height, 0.1f, 100.f);
+  glm::mat4 Projection = glm::perspective(80.0f, (float)g_width/g_height, 0.1f, 500.f);
   safe_glUniformMatrix4fv(h_uProjMatrix, glm::value_ptr(Projection));
 }
 
@@ -129,20 +131,28 @@ void draw() {
    safe_glVertexAttribPointer(h_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeIdxBuffObj);
 
-
-   ModelTrans.pushMatrix();
-
-   ModelTrans.translate(vec3(0, 0, 0));
-   ModelTrans.scale(2, 2, 2);
-
-   SetModel();
-
    // 0x852178
    glUniform3f(h_uColor, 0x85/(float)0xFF, 0x21/(float)0xFF, 0x78/(float)0xFF);
-   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT,
-    (const GLvoid*)(getTriangleIndex(5, 2, 10) * sizeof(short)));
 
-   ModelTrans.popMatrix();
+   const vector<unsigned char>& cubes = marchingCubes.getCubes();
+
+   for (unsigned int i = 0; i < cubes.size(); i++) {
+      ModelTrans.pushMatrix();
+
+      ModelTrans.translate((vec3)marchingCubes.coordinate(i));
+      /* ModelTrans.scale(128, 128, 128); */
+
+      SetModel();
+
+      const int* triangleRow = MarchingCubes::triTable[cubes[i]];
+      for (int k = 0; triangleRow[k] != -1; k += 3) {
+         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT,
+          (const GLvoid*)(getTriangleIndex(triangleRow[k],
+          triangleRow[k + 1], triangleRow[k + 2]) * sizeof(short)));
+      }
+
+      ModelTrans.popMatrix();
+   }
 
    // Disable the attributes used by our shader
    safe_glDisableVertexAttribArray(h_aPosition);
@@ -260,8 +270,6 @@ float implicitSphere(int x, int y, int z) {
 
 int main(int argc, char** argv) {
    glut(argc, argv);
-
-   MarchingCubes marchingCubes(vec3(128, 128, 128));
 
    marchingCubes.insideOutsideTest(implicitSphere, 0);
    marchingCubes.generateSurfaces();

@@ -13,6 +13,7 @@ public:
 
    void insideOutsideTest(float (*equation) (int x, int y, int z), float);
    void generateSurfaces();
+   ivec3 coordinate(int idx);
 
    const vector<unsigned char>& getCubes() { return cubes; }
 
@@ -25,7 +26,6 @@ private:
    vector<unsigned char> cubes; // 3-dimensional list for voxel grid.
 
    int index(int x, int y, int z);
-   ivec3 coordinate(int idx);
 };
 
 #endif
