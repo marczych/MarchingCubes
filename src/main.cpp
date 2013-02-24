@@ -153,13 +153,13 @@ void draw() {
 }
 
 void keyboard(unsigned char key, int x, int y ){
-  switch (key) {
-    case 'q': case 'Q' :
-      exit(EXIT_SUCCESS);
-      break;
-  }
+   switch (key) {
+      case 'q': case 'Q' :
+         exit(EXIT_SUCCESS);
+         break;
+   }
 
-  glutPostRedisplay();
+   glutPostRedisplay();
 }
 
 void reshape(int width, int height) {

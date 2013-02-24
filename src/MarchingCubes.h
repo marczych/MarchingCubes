@@ -14,8 +14,10 @@ public:
    void insideOutsideTest(float (*equation) (int x, int y, int z), float);
    void generateSurfaces();
 
-	const static int edgeTable[256];
-	const static int triTable[256][16];
+   const vector<unsigned char>& getCubes() { return cubes; }
+
+   const static int edgeTable[256];
+   const static int triTable[256][16];
 
 private:
    ivec3 size; // Size of marching cubes grid.
