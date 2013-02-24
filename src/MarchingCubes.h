@@ -11,6 +11,8 @@ class MarchingCubes {
 public:
    MarchingCubes(vec3 size_);
 
+   void insideOutsideTest(float (*equation) (int x, int y, int z), float);
+
 	const static int edgeTable[256];
 	const static int triTable[256][16];
 
