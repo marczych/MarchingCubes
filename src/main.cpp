@@ -24,6 +24,10 @@
 using namespace glm;
 using namespace std;
 
+// Global variable for radius. Maybe we should find a better way to do this...
+// You know, without a global variable.
+int radius = 72;
+
 void draw() {
    // Draw here.
 }
@@ -39,10 +43,16 @@ void glut(int argc, char** argv) {
    glutMainLoop();
 }
 
-int main(int argc, char** argv) {
-   glut(argc, argv);
+float implicitSphere(int x, int y, int z) {
+   return x*x + y*y + z*z - radius*radius;
+}
 
+int main(int argc, char** argv) {
    MarchingCubes marchingCubes(vec3(128, 128, 128));
+
+   marchingCubes.insideOutsideTest(implicitSphere, 0);
+
+   glut(argc, argv);
 
    return 0;
 }

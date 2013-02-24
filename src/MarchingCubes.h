@@ -11,6 +11,8 @@ class MarchingCubes {
 public:
    MarchingCubes(vec3 size_);
 
+   void insideOutsideTest(float (*equation) (int x, int y, int z), float);
+
 private:
    vec3 size; // Size of marching cubes grid.
    vector<bool> points; // 3-dimensional list for inside/outside.
