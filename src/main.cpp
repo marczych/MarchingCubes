@@ -61,7 +61,7 @@ void SetProjectionMatrix() {
 /* camera controls - do not change - sets matrix in shader */
 void SetView() {
   glm::mat4 Trans = glm::translate( glm::mat4(1.0f),
-   glm::vec3(-volumeSize.x * 0.5f, -volumeSize.y * 0.5f, -volumeSize.z * 1.5f));
+   glm::vec3(-volumeSize.x * 0.5f, -volumeSize.y * 0.5f, -volumeSize.z * 1.25f));
   glm::mat4 RotateX = glm::rotate( Trans, g_viewangle, glm::vec3(0.0f, 1, 0));
   safe_glUniformMatrix4fv(h_uViewMatrix, glm::value_ptr(RotateX));
 }
