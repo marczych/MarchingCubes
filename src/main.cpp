@@ -51,6 +51,7 @@ int main(int argc, char** argv) {
    MarchingCubes marchingCubes(vec3(128, 128, 128));
 
    marchingCubes.insideOutsideTest(implicitSphere, 0);
+   marchingCubes.generateSurfaces();
 
    glut(argc, argv);
 

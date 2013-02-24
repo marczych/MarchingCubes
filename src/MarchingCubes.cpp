@@ -4,6 +4,28 @@
 
 MarchingCubes::MarchingCubes(vec3 size_) : size(size_) {
    points.resize((size.x + 1) * (size.y + 1) * (size.z + 1));
+   cubes.resize(size.x * size.y * size.z);
+}
+
+void MarchingCubes::generateSurfaces() {
+   for (int x = 0; x < size.x; ++x) {
+      for (int y = 0; y < size.y; ++y) {
+         for (int z = 0; z < size.z; ++z) {
+            unsigned char edgeMask = 0;
+
+            edgeMask |= (points[index(x+1, y+1, z+1)] ? 0x01 : 0x00);
+            edgeMask |= (points[index(x+1, y+1, z  )] ? 0x02 : 0x00);
+            edgeMask |= (points[index(x+1, y,   z+1)] ? 0x04 : 0x00);
+            edgeMask |= (points[index(x+1, y,   z  )] ? 0x08 : 0x00);
+            edgeMask |= (points[index(x,   y+1, z+1)] ? 0x10 : 0x00);
+            edgeMask |= (points[index(x,   y+1, z  )] ? 0x20 : 0x00);
+            edgeMask |= (points[index(x,   y,   z+1)] ? 0x40 : 0x00);
+            edgeMask |= (points[index(x,   y,   z  )] ? 0x80 : 0x00);
+
+            cubes[index(x, y, z)] = edgeMask;
+         }
+      }
+   }
 }
 
 void MarchingCubes::insideOutsideTest(float (*equation) (int, int, int), float isoValue) {
