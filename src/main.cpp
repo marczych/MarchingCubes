@@ -117,10 +117,10 @@ void InitCubeTriangles() {
             cubeIndex[index + 1] = triangleRow[k + 1];
             cubeIndex[index + 2] = triangleRow[k + 2];
 
-            vec3 edge1 = floatToVec3(cubeEdges + triangleRow[k + 1]) -
-                         floatToVec3(cubeEdges + triangleRow[k]);
-            vec3 edge2 = floatToVec3(cubeEdges + triangleRow[k + 2]) -
-                         floatToVec3(cubeEdges + triangleRow[k + 1]);
+            vec3 edge1 = floatToVec3(cubeEdges + 3 * triangleRow[k + 1]) -
+                         floatToVec3(cubeEdges + 3 * triangleRow[k + 0]);
+            vec3 edge2 = floatToVec3(cubeEdges + 3 * triangleRow[k + 2]) -
+                         floatToVec3(cubeEdges + 3 * triangleRow[k + 1]);
             vec3 normal = normalize(cross(edge1, edge2));
 
             cubeNormals[index / 3] = normal;
