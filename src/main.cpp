@@ -303,6 +303,10 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
    return 1;
 }
 
+float implicitEllipsoid(int x, int y, int z) {
+   return x*x/1034 + y*y/5003 + z*z/1532 - 1;
+}
+
 float implicitSphere(int x, int y, int z) {
    return x*x + y*y + z*z - radius*radius;
 }
