@@ -154,7 +154,9 @@ void draw() {
    glUniform3f(h_uColor, 0x85/(float)0xFF, 0x21/(float)0xFF, 0x78/(float)0xFF);
 
    ModelTrans.pushMatrix(); {
+      ModelTrans.translate(volumeSize/2.0f);
       ModelTrans.rotate(modelAngle, vec3(0.0, -1.0f, 0.0));
+      ModelTrans.translate(volumeSize/-2.0f);
 
       const vector<unsigned char>& cubes = marchingCubes.getCubes();
 
