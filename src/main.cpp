@@ -36,6 +36,7 @@ int shaderProgram;
 //Handles to the shader data
 GLint h_aPosition;
 GLint h_uColor;
+GLint h_uNormal;
 GLint h_uModelMatrix;
 GLint h_uViewMatrix;
 GLint h_uProjMatrix;
@@ -47,6 +48,8 @@ float g_width, g_height;
 float g_viewangle = 0;
 
 RenderingHelper ModelTrans;
+
+vector<vec3> cubeNormals;
 
 // Global variable for radius. Maybe we should find a better way to do this...
 // You know, without a global variable.
@@ -75,6 +78,10 @@ int getTriangleIndex(int edge1, int edge2, int edge3) {
    return ((edge1 << 8) | (edge2 << 4) | edge3) * 3;
 }
 
+vec3 floatToVec3(float* start) {
+   return vec3(start[0], start[1], start[2]);
+}
+
 void InitCubeTriangles() {
    float cubeEdges[] = {
       0.0f, 0.5f, 0.5f,
@@ -94,6 +101,7 @@ void InitCubeTriangles() {
    };
 
    short cubeIndex[((1 << 13) - 1) * 3];
+   cubeNormals.resize(((1 << 13) - 1) * 3);
    memset(cubeIndex, -1, sizeof(cubeIndex));
 
    for (int i = 0; i < 256; i++) {
@@ -107,6 +115,14 @@ void InitCubeTriangles() {
             cubeIndex[index] = triangleRow[k];
             cubeIndex[index + 1] = triangleRow[k + 1];
             cubeIndex[index + 2] = triangleRow[k + 2];
+
+            vec3 edge1 = floatToVec3(cubeEdges + triangleRow[k + 1]) -
+                         floatToVec3(cubeEdges + triangleRow[k]);
+            vec3 edge2 = floatToVec3(cubeEdges + triangleRow[k + 2]) -
+                         floatToVec3(cubeEdges + triangleRow[k + 1]);
+            vec3 normal = normalize(cross(edge1, edge2));
+
+            cubeNormals[index / 3] = normal;
          }
       }
    }
@@ -147,6 +163,12 @@ void draw() {
 
       const int* triangleRow = MarchingCubes::triTable[cubes[i]];
       for (int k = 0; triangleRow[k] != -1; k += 3) {
+         int index = getTriangleIndex(triangleRow[k], triangleRow[k + 1],
+          triangleRow[k + 2]);
+
+         // Set normal.
+         glUniform3f(h_uNormal, cubeNormals[index/3].x, cubeNormals[index/3].y,
+          cubeNormals[index/3].z);
          glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT,
           (const GLvoid*)(getTriangleIndex(triangleRow[k],
           triangleRow[k + 1], triangleRow[k + 2]) * sizeof(short)));
@@ -255,7 +277,8 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
    /* get handles to attribute data */
    h_aPosition = safe_glGetAttribLocation(shaderProgram, "aPosition");
    /* add a handle for the normal */
-   h_uColor = safe_glGetUniformLocation(shaderProgram,  "uColor");
+   h_uColor = safe_glGetUniformLocation(shaderProgram, "uColor");
+   h_uNormal = safe_glGetUniformLocation(shaderProgram, "uNormal");
    h_uProjMatrix = safe_glGetUniformLocation(shaderProgram, "uProjMatrix");
    h_uViewMatrix = safe_glGetUniformLocation(shaderProgram, "uViewMatrix");
    h_uModelMatrix = safe_glGetUniformLocation(shaderProgram, "uModelMatrix");
