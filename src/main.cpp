@@ -298,6 +298,18 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
    return 1;
 }
 
+float implicitParaboloid(int x, int y, int z) {
+   return x*x/4 + y*y/9 - z/2;
+}
+
+float implicitHyperbolicParaboloid(int x, int y, int z) {
+   return y*y/9 - x*x/4 - z/2;
+}
+
+float implicitHyperboloid(int x, int y, int z) {
+   return x*x/16 + y*y/9 - z*z/25 - 1;
+}
+
 float implicitEllipsoid(int x, int y, int z) {
    return x*x/1034 + y*y/5003 + z*z/1532 - 1;
 }
