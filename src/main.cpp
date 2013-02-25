@@ -200,12 +200,28 @@ void updateMarchingCubes() {
 
 void keyboard(unsigned char key, int x, int y ){
    switch (key) {
-   case 'l':
+   case 'd':
       modelAngle += 5.0f;
       break;
 
-   case 'h':
+   case 'a':
       modelAngle -= 5.0f;
+      break;
+
+   case 'l':
+      modelAngle += 45.0f;
+      break;
+
+   case 'h':
+      modelAngle -= 45.0f;
+      break;
+
+   case 'L':
+      modelAngle += 90.0f;
+      break;
+
+   case 'H':
+      modelAngle -= 90.0f;
       break;
 
    case 'e':
@@ -245,8 +261,7 @@ void openGLInitialize() {
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_DEPTH_TEST);
 
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
+    glDisable(GL_CULL_FACE);
 
     ModelTrans.useModelViewMatrix();
     ModelTrans.loadIdentity();
@@ -313,19 +328,21 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
 }
 
 float implicitParaboloid(int x, int y, int z) {
-   return x*x/4 + y*y/9 - z/2;
+   return x*x/(0.2 * radius * radius) + y*y/(0.4 * radius * radius) - z/(0.3 * radius);
 }
 
 float implicitHyperbolicParaboloid(int x, int y, int z) {
-   return y*y/9 - x*x/4 - z/2;
+   return y*y/(0.4 * radius * radius) - x*x/(0.2 * radius * radius) - z/(0.3 * radius);
 }
 
 float implicitHyperboloid(int x, int y, int z) {
-   return x*x/16 + y*y/9 - z*z/25 - 1;
+   return x*x/(0.5 * radius * radius) + y*y/(0.4 * radius * radius) -
+    z*z/(0.2 * radius * radius) - 1;
 }
 
 float implicitEllipsoid(int x, int y, int z) {
-   return x*x/25 + y*y/16 + z*z/25 - 1;
+   return x*x/(0.4 * radius * radius) + y*y/(0.2 * radius * radius) +
+    z*z/(0.5 * radius * radius) - 1;
 }
 
 float implicitSphere(int x, int y, int z) {
