@@ -47,6 +47,8 @@ GLuint CubeBuffObj, CubeIdxBuffObj;
 float g_width, g_height;
 float g_viewangle = 0;
 
+float modelAngle = 0.0f;
+
 RenderingHelper ModelTrans;
 
 vector<vec3> cubeNormals;
@@ -151,30 +153,35 @@ void draw() {
    // 0x852178
    glUniform3f(h_uColor, 0x85/(float)0xFF, 0x21/(float)0xFF, 0x78/(float)0xFF);
 
-   const vector<unsigned char>& cubes = marchingCubes.getCubes();
+   ModelTrans.pushMatrix(); {
+      ModelTrans.rotate(modelAngle, vec3(0.0, -1.0f, 0.0));
 
-   for (unsigned int i = 0; i < cubes.size(); i++) {
-      ModelTrans.pushMatrix();
+      const vector<unsigned char>& cubes = marchingCubes.getCubes();
 
-      ModelTrans.translate((vec3)marchingCubes.coordinate(i));
+      for (unsigned int i = 0; i < cubes.size(); i++) {
+         ModelTrans.pushMatrix();
 
-      SetModel();
+         ModelTrans.translate((vec3)marchingCubes.coordinate(i));
 
-      const int* triangleRow = MarchingCubes::triTable[cubes[i]];
-      for (int k = 0; triangleRow[k] != -1; k += 3) {
-         int index = getTriangleIndex(triangleRow[k], triangleRow[k + 1],
-          triangleRow[k + 2]);
+         SetModel();
 
-         // Set normal.
-         glUniform3f(h_uNormal, cubeNormals[index/3].x, cubeNormals[index/3].y,
-          cubeNormals[index/3].z);
-         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT,
-          (const GLvoid*)(getTriangleIndex(triangleRow[k],
-          triangleRow[k + 1], triangleRow[k + 2]) * sizeof(short)));
+         const int* triangleRow = MarchingCubes::triTable[cubes[i]];
+         for (int k = 0; triangleRow[k] != -1; k += 3) {
+            int index = getTriangleIndex(triangleRow[k], triangleRow[k + 1],
+             triangleRow[k + 2]);
+
+            // Set normal.
+            glUniform3f(h_uNormal, cubeNormals[index/3].x, cubeNormals[index/3].y,
+             cubeNormals[index/3].z);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT,
+             (const GLvoid*)(getTriangleIndex(triangleRow[k],
+             triangleRow[k + 1], triangleRow[k + 2]) * sizeof(short)));
+         }
+
+         ModelTrans.popMatrix();
       }
 
-      ModelTrans.popMatrix();
-   }
+   } ModelTrans.popMatrix();
 
    // Disable the attributes used by our shader
    safe_glDisableVertexAttribArray(h_aPosition);
@@ -186,9 +193,17 @@ void draw() {
 
 void keyboard(unsigned char key, int x, int y ){
    switch (key) {
-      case 'q': case 'Q' :
-         exit(EXIT_SUCCESS);
-         break;
+   case 'l':
+      modelAngle += 5.0f;
+      break;
+
+   case 'h':
+      modelAngle -= 5.0f;
+      break;
+
+   case 'q': case 'Q' :
+      exit(EXIT_SUCCESS);
+      break;
    }
 
    glutPostRedisplay();
@@ -285,7 +300,6 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
    printf("sucessfully installed shader %d\n", shaderProgram);
    return 1;
 }
-
 
 float implicitSphere(int x, int y, int z) {
    return x*x + y*y + z*z - radius*radius;
