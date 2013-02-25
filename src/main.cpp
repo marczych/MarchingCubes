@@ -229,6 +229,12 @@ void keyboard(unsigned char key, int x, int y ){
       updateMarchingCubes();
       break;
 
+   case 'E':
+      equationCounter--;
+      if (equationCounter == -1) equationCounter = implicitEquations.size() - 1;
+      updateMarchingCubes();
+      break;
+
    case 'q': case 'Q' :
       exit(EXIT_SUCCESS);
       break;
