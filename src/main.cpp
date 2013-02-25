@@ -35,7 +35,6 @@ int shaderProgram;
 
 //Handles to the shader data
 GLint h_aPosition;
-GLint h_uColor;
 GLint h_uNormal;
 GLint h_uModelMatrix;
 GLint h_uViewMatrix;
@@ -149,9 +148,6 @@ void draw() {
    glBindBuffer(GL_ARRAY_BUFFER, CubeBuffObj);
    safe_glVertexAttribPointer(h_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, CubeIdxBuffObj);
-
-   // 0x852178
-   glUniform3f(h_uColor, 0x85/(float)0xFF, 0x21/(float)0xFF, 0x78/(float)0xFF);
 
    ModelTrans.pushMatrix(); {
       ModelTrans.translate(volumeSize/2.0f);
@@ -293,7 +289,6 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
    /* get handles to attribute data */
    h_aPosition = safe_glGetAttribLocation(shaderProgram, "aPosition");
    /* add a handle for the normal */
-   h_uColor = safe_glGetUniformLocation(shaderProgram, "uColor");
    h_uNormal = safe_glGetUniformLocation(shaderProgram, "uNormal");
    h_uProjMatrix = safe_glGetUniformLocation(shaderProgram, "uProjMatrix");
    h_uViewMatrix = safe_glGetUniformLocation(shaderProgram, "uViewMatrix");
@@ -303,6 +298,10 @@ int InstallShader(const GLchar *vShaderName, const GLchar *fShaderName) {
    return 1;
 }
 
+float implicitEllipsoid(int x, int y, int z) {
+   return x*x/1034 + y*y/5003 + z*z/1532 - 1;
+}
+
 float implicitSphere(int x, int y, int z) {
    return x*x + y*y + z*z - radius*radius;
 }
@@ -310,7 +309,7 @@ float implicitSphere(int x, int y, int z) {
 int main(int argc, char** argv) {
    glut(argc, argv);
 
-   marchingCubes.insideOutsideTest(implicitSphere, 0);
+   marchingCubes.insideOutsideTest(implicitSphere, 1);
    marchingCubes.generateSurfaces();
 
    openGLInitialize();
