@@ -56,6 +56,9 @@ vector<vec3> cubeNormals;
 // You know, without a global variable.
 int radius = sqrt(dot(volumeSize, volumeSize)) * 0.25f;
 
+int equationCounter = 0;
+vector<float (*) (int, int, int)> implicitEquations;
+
 /* projection matrix - do not change - sets matrix in shader */
 void SetProjectionMatrix() {
   glm::mat4 Projection = glm::perspective(80.0f, (float)g_width/g_height, 0.1f, 500.f);
@@ -102,7 +105,7 @@ void InitCubeTriangles() {
    };
 
    short cubeIndex[((1 << 13) - 1) * 3];
-   cubeNormals.resize(((1 << 13) - 1) * 3);
+   cubeNormals.resize(((1 << 13) - 1));
    memset(cubeIndex, -1, sizeof(cubeIndex));
 
    for (int i = 0; i < 256; i++) {
@@ -189,6 +192,12 @@ void draw() {
    glutSwapBuffers();
 }
 
+void updateMarchingCubes() {
+   marchingCubes.insideOutsideTest(implicitEquations[equationCounter %
+    implicitEquations.size()], 1);
+   marchingCubes.generateSurfaces();
+}
+
 void keyboard(unsigned char key, int x, int y ){
    switch (key) {
    case 'l':
@@ -197,6 +206,11 @@ void keyboard(unsigned char key, int x, int y ){
 
    case 'h':
       modelAngle -= 5.0f;
+      break;
+
+   case 'e':
+      equationCounter++;
+      updateMarchingCubes();
       break;
 
    case 'q': case 'Q' :
@@ -311,18 +325,27 @@ float implicitHyperboloid(int x, int y, int z) {
 }
 
 float implicitEllipsoid(int x, int y, int z) {
-   return x*x/1034 + y*y/5003 + z*z/1532 - 1;
+   return x*x/25 + y*y/16 + z*z/25 - 1;
 }
 
 float implicitSphere(int x, int y, int z) {
    return x*x + y*y + z*z - radius*radius;
 }
 
+void initEquations() {
+   implicitEquations.push_back(implicitSphere);
+   implicitEquations.push_back(implicitEllipsoid);
+   implicitEquations.push_back(implicitHyperboloid);
+   implicitEquations.push_back(implicitHyperbolicParaboloid);
+   implicitEquations.push_back(implicitParaboloid);
+}
+
 int main(int argc, char** argv) {
    glut(argc, argv);
 
-   marchingCubes.insideOutsideTest(implicitSphere, 1);
-   marchingCubes.generateSurfaces();
+   initEquations();
+
+   updateMarchingCubes();
 
    openGLInitialize();
 
