@@ -84,20 +84,20 @@ vec3 floatToVec3(float* start) {
 
 void InitCubeTriangles() {
    float cubeEdges[] = {
-      0.0f, 0.5f, 0.5f,
-      0.5f, 0.0f, 0.5f,
-      0.0f, -0.5f, 0.5f,
-      -0.5f, 0.0f, 0.5f,
-
       0.0f, 0.5f, -0.5f,
-      0.5f, 0.0f, -0.5f,
-      0.0f, -0.5f, -0.5f,
-      -0.5f, 0.0f, -0.5f,
-
+      0.5f, 0.5f, -0.0f,
+      0.0f, 0.5f, 0.5f,
       -0.5f, 0.5f, 0.0f,
-      0.5f, 0.5f, 0.0f,
+
+      0.0f, 0.5f, 0.5f,
       0.5f, -0.5f, 0.0f,
-      -0.5f, -0.5f, 0.0f
+      0.0f, -0.5f, 0.5f,
+      -0.5f, -0.5f, 0.0f,
+
+      -0.5f, 0.0f, -0.5f,
+      0.5f, 0.0f, -0.5f,
+      0.5f, 0.0f, 0.5f,
+      -0.5f, 0.0f, 0.5f
    };
 
    short cubeIndex[((1 << 13) - 1) * 3];
@@ -157,7 +157,6 @@ void draw() {
       ModelTrans.pushMatrix();
 
       ModelTrans.translate((vec3)marchingCubes.coordinate(i));
-      ModelTrans.rotate(-90.0f, vec3(1.0f, 0.0f, 0.0f));
 
       SetModel();
 
