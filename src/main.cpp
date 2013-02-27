@@ -355,12 +355,21 @@ float implicitSphere(int x, int y, int z) {
    return x*x + y*y + z*z - radius*radius;
 }
 
+float implicitTieFighter(int ix, int iy, int iz) {
+   float x = ix / 25.0f;
+   float y = iy / 25.0f;
+   float z = iz / 25.0f;
+
+   return (x*x+y*y+z*z<0.2)+((y*y+z*z<0.08)*(x<0.4)*(x>0))+(x*x+4*y*y<(1-abs(z))*0.12)+((abs(z)<0.95)*(abs(z)>0.9)*(abs(x)+ abs(y) *0.3<1))+((abs(z)<1)*(abs(z) >0.89))*((abs(x) <0.7)*(abs(y) >0.9)+(abs(y) <0.035)+(x>y*0.7-0.05)*(x<y*0.7+0.05)+(-x>y*0.7-0.05)*(-x<y*0.7+0.05)+((abs(x) +abs(y) *0.3<1.05)*(abs(x) +abs(y)*0.3>0.95)));
+}
+
 void initEquations() {
    implicitEquations.push_back(implicitSphere);
    implicitEquations.push_back(implicitEllipsoid);
    implicitEquations.push_back(implicitHyperboloid);
    implicitEquations.push_back(implicitHyperbolicParaboloid);
    implicitEquations.push_back(implicitParaboloid);
+   implicitEquations.push_back(implicitTieFighter);
 }
 
 int main(int argc, char** argv) {
